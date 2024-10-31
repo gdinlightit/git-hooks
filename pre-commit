@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Iterate over all staged HTML files
+git diff --cached --name-only -- '*.html' | while read -r file; do
+    # Backup the original file
+    cp "$file" "${file}.bak"
+
+    # Remove TODO comments from the staged version only
+    sed -i '' -e '/<!-- TODO/ d' "$file"
+
+    # Re-stage the modified file
+    git add "$file"
+
+    # Restore the original file from the backup after staging
+    mv "${file}.bak" "$file"
+done
+
+# Continue with the commit
